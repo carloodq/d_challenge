@@ -23,6 +23,7 @@ class my_db:
 
     def create_table(self):
 
+        conn, cur = self.connect_db()
 
         cur.execute("""
             CREATE TABLE trips2(

@@ -14,9 +14,11 @@ Note: if you want to also run the .ipynb uncomment all the requirements
 Create a table called trips2
 'python create_table.py <pwd> <user> <host>'
 
+(4b. If needed eliminate all table records with 'python empty_table.py <pwd> <user> <host>')
+
 5. Populate the table 
 Note: data and metadata must be in the same folder
-'python create_table.py <pwd> <user> <host>'
+'python populate_table.py <pwd> <user> <host>'
 
 6. Create the .csvs for PowerBI
 'python generate_answers.py <pwd> <user> <host>'
