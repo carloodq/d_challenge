@@ -23,3 +23,6 @@ Note: data and metadata must be in the same folder
 6. Create the .csvs for PowerBI
 'python generate_answers.py <pwd> <user> <host>'
 Note: they will be saved in the same directory.
+
+7. Change data sources in PowerBI
+Change the datasources in PowerBI to link them to the just generated .csvs
