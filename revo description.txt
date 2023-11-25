@@ -1,0 +1,65 @@
+
+
+This is a brief explanation of what the code does.
+
+Initialy I build a PostgreSQL database to save all the data.
+
+Then I created a table that has as primary key an ID field that has serial datatype (with autoincrement).
+
+I then created a function called process_row, that takes in individual rows as lists from the initial .csv and processed them. For instance, it strips spaces around the strings and converts numerical variables to ints/floats. If the function fails to convert to the proper data type (eg if the field is empty), it will return None.
+
+Most variables have text datatype, while for statistics are integer or real (real is for hours travelled).
+
+I insert individual rows in the table of the database.
+
+I then read the data from the database table and create a pandas dataframe where I store it.
+
+# EDA
+
+For the exploratory data analysis I first run some simple analysis, such as checking for each column, unique values, null values, for numerical the distribution.
+
+I do this with the help of the pandas library as well as with libraries such as sweetviz, which automatically generates an HTML report with an overview of each variable, including a plotting of histograms to visualize the distribution.
+For numerical variables I also plot the boxplots to see the outliers.
+
+I also make use of plotly express library to display a scatter matrix (a matrix of scatter plots) for the numerical variables and export the report in HTML to have a better view of the plot.
+
+# Data Cleaning
+
+For the data cleaning section I was going back and forth between the plots and the cleaning code. Initially I removed some outliers, by defining a threashold of 5*IQR out of 1st and 3rd quartile. I also removed negatives values for the statistical variables.
+
+I then created new columns, which are the corresponding text version of the codes for the different variables, joining the existing dataframe with the metadata .csvs.
+I cleaned again the data, by dropping rows containing invalid codes. I didn't do it for travel modes, else it would have led to a drop of too many rows.
+
+# Question 1
+
+For question 1 I plotted the total number of trips split by year, urbanization type and transport mode.
+I noticed that there was no data for the number of trips for Bus/tram/metro, Train and other.
+The data I use in PowerBI is from the qn1b.csv.
+In PowerBI I plotted a comparison of the number of trips acros the different year and by transport mode/urbanization.
+I clear insight is that there are fewer trips in extremey urbanized areas, maybe because people can carry out more duties in a single trip.
+Another insight that can be noticed, even though less evident, is a light slump in number of walking trips during 2019/2020 for hardly urbanized, which could be a consequence of the pandemic.
+Also, by using a stacked bar chart I can see how increase in urbanization is correlated with increase in the portion of walking trips and decrease in passenger car driver.
+
+# Question 2
+Question 2 asked the people who travelled the most by bike in west netherlands, which I displayed on a bar chart in power BI (qn2.csv).
+
+# Question 3
+For question 3 I found that there are not many insights if I only consider the top 8 bikers, for 2022, because each user is only associated with one travelling motive. Therefore I decided to expand to the top 100 users (qn3b.csv).
+
+I then discover that the 3 least popular motives for this group (defining popularity as most number of trips performed in a year) are services/care, professionally and attending education/courses.
+
+# Question 4
+
+In question 4 (qn4a.csv) I'm looking for people who travel the least for education purposes.
+I find this group (after preprocessing and dropping non available values for n. of trips and kms travelled) for each year.
+Then I see the average number of trips for of the bottom 10 people each year.
+By plotting a line graph, I can notice a drop in average n. of trips decreases from around 23 in 2018 to 18 in 2022.
+
+
+
+
+
+
+
+
+

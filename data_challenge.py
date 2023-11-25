@@ -283,6 +283,10 @@ class my_df:
         # making level_urbanization categorical with order
         self.df['level_urbanization'] = pd.Categorical(self.df['level_urbanization'], [ 'Hardly urbanised', 'Moderately urbanised', 'Strongly urbanised', 'Extremely urbanised'])
 
+        # fixing the periods years
+        self.df['Periods'] = self.df['Periods'].apply(lambda x: x[:4])
+
+
 
         return 'ok'
     
@@ -315,13 +319,13 @@ class my_df:
         def generate_answer_three(df = self.df):
             topbike = df[df['Population'] == 'A048709'][df['TravelModes'] == 'A018984'].groupby('UserId')[['Km_travelled_in_a_year']].sum().sort_values(by = 'Km_travelled_in_a_year', ascending = False).head(8)
             topbike = list(topbike.index.values)
-            qn3 = df[df['UserId'].isin(topbike)][df['Periods'] == '2022JJ00']
+            qn3 = df[df['UserId'].isin(topbike)][df['Periods'] == '2022']
             qn3.to_csv('qn3.csv')
 
             # same but for top 100 else there are not many results
             topbike = df[df['Population'] == 'A048709'][df['TravelModes'] == 'A018984'].groupby('UserId')[['Km_travelled_in_a_year']].sum().sort_values(by = 'Km_travelled_in_a_year', ascending = False).head(100)
             topbike = list(topbike.index.values)
-            qn3b = df[df['UserId'].isin(topbike)][df['Periods'] == '2022JJ00']
+            qn3b = df[df['UserId'].isin(topbike)][df['Periods'] == '2022']
             # common here is intended as how many trips are made 
             qn3b = qn3b.groupby(['motive'], as_index=False)[['Trip_in_a_year']].sum().sort_values('Trip_in_a_year')
             qn3b.to_csv('qn3b.csv')
@@ -332,24 +336,35 @@ class my_df:
 
 
         def generate_answer_four(df = self.df):
+            df['Periods'] = df['Periods'].apply(lambda x: int(x[:4]))
+
+            unique_periods = list(df['Periods'].unique())
+            unique_periods.sort()
+
             going_to_edu = df[df['TravelMotives'] == '2030210']
             going_to_edu_sums = going_to_edu
-            # for finding the people with least number of kms we need to remove the nas for kms and trips
             going_to_edu_sums = going_to_edu[going_to_edu['Km_travelled_in_a_year'].notna()]
             going_to_edu_sums = going_to_edu[going_to_edu['Trip_in_a_year'].notna()]
 
-            # keep 10
-            going_to_edu_sums = going_to_edu_sums.groupby('UserId').sum().sort_values('Km_travelled_in_a_year').head(10)
-            ppl_q3 = list(going_to_edu_sums.head(10).index)
-            dfq4 = going_to_edu[going_to_edu['UserId'].isin(ppl_q3)]
-            qn4 = dfq4.groupby(['Periods']).mean()[['Trip_in_a_year']]
+            means = []
 
-            # reformat years for Power BI
-            qn4 = qn4.reset_index()
-            qn4['Periods'] = qn4['Periods'].apply(lambda x: x[:4])
-            qn4.to_csv('qn4.csv')
+            for p in unique_periods:
+                going_to_edu_y = going_to_edu_sums[going_to_edu_sums['Periods'] == p]
+                # keep 10
+                going_to_edu_y = going_to_edu_y.groupby('UserId').sum().sort_values('Km_travelled_in_a_year').head(10)
+                ppl_q3 = list(going_to_edu_y.head(10).index)
+                dfq4 = going_to_edu[going_to_edu['UserId'].isin(ppl_q3)]
+                my_mean = dfq4['Trip_in_a_year'].mean()
 
-            print('qn4.csv saved')
+                means.append(my_mean)
+
+
+            qn4a = pd.DataFrame([unique_periods,means]).transpose()
+            qn4a.columns = ['Year', 'Average Trips in a Year']
+            qn4a.to_csv('qn4a.csv')
+
+
+            print('qn4.csv and qn4b.csv saved')
             return 'ok'
         
         generate_answer_one()
